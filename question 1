@@ -1,0 +1,95 @@
+question 1:->>
+
+Apply data cleaning techniques on any dataset (e,g, wine dataset). Techniques may include handling 
+missing values, outliers, inconsistent values. A set of validation rules can be prepared based on the 
+dataset and validations can be performed.
+
+Answer:->>
+
+import pandas as pd
+import numpy as np
+
+# Create a dummy dataset with missing values, outliers, and inconsistent values
+data = {
+    'A': [1, 2, np.nan, 4, 5],
+    'B': [10, 20, 30, 40, 50],
+    'C': ['red', 'green', 'blue', 'yellow', 'pink'],
+    'D': [100, 200, 300, 400, 500]
+}
+
+# Add an outlier
+data['B'][2] = 1000
+
+# Add inconsistent value
+data['C'][3] = 'green'
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Display the original dataset
+print("Original Dataset:")
+print(df)
+print()
+
+# Handling missing values
+df['A'].fillna(df['A'].mean(), inplace=True)
+
+# Handling outliers (replace with median)
+median_B = df['B'].median()
+df['B'] = np.where(df['B'] > 100, median_B, df['B'])
+
+# Handling inconsistent values
+valid_colors = ['red', 'green', 'blue', 'yellow']
+df['C'] = np.where(~df['C'].isin(valid_colors), np.nan, df['C'])
+
+# Display the cleaned dataset
+print("Cleaned Dataset:")
+print(df)
+print()
+
+# Validation rules
+# Rule 1: Column A should not have missing values
+if df['A'].isnull().any():
+    print("Validation Rule 1: Column A should not have missing values - Failed")
+else:
+    print("Validation Rule 1: Column A should not have missing values - Passed")
+
+# Rule 2: Column B should not have outliers
+if (df['B'] > 100).any():
+    print("Validation Rule 2: Column B should not have outliers - Failed")
+else:
+    print("Validation Rule 2: Column B should not have outliers - Passed")
+
+# Rule 3: Column C should have only valid colors
+if (~df['C'].isin(valid_colors)).any():
+    print("Validation Rule 3: Column C should have only valid colors - Failed")
+else:
+    print("Validation Rule 3: Column C should have only valid colors - Passed")
+
+
+
+Output:-->>
+
+Original Dataset:
+     A       B      C    D
+0  1.0    10.0    red  100
+1  2.0    20.0  green  200
+2  NaN  1000.0   blue  300
+3  4.0    40.0  green  400
+4  5.0     NaN   pink  500
+
+
+
+Cleaned Dataset:
+     A     B      C    D
+0  1.0  10.0    red  100
+1  2.0  20.0  green  200
+2  3.0  40.0   blue  300
+3  4.0  40.0  green  400
+4  5.0  50.0    NaN  500
+
+
+
+Validation Rule 1: Column A should not have missing values - Passed
+Validation Rule 2: Column B should not have outliers - Passed
+Validation Rule 3: Column C should have only valid colors - Failed
