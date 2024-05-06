@@ -1,0 +1,55 @@
+question :-5 ->>>
+
+Use Simple K-means algorithm for clustering on any dataset. Compare the performance of 
+clusters by changing the parameters involved in the algorithm. Plot MSE computed after each 
+iteration using a line plot for any set of parameters.
+
+answer:-->>
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+from sklearn.metrics import mean_squared_error
+
+# Generate sample data
+n_samples = 300
+n_features = 2
+X, _ = make_blobs(n_samples=n_samples, centers=4, n_features=n_features, random_state=42)
+
+# Function to perform K-means clustering and compute MSE
+def kmeans_and_mse(X, n_clusters, max_iter=300, random_state=42):
+    kmeans = KMeans(n_clusters=n_clusters, max_iter=max_iter, random_state=random_state)
+    kmeans.fit(X)
+    centroids = kmeans.cluster_centers_
+    labels = kmeans.labels_
+    mse = mean_squared_error(X, centroids[labels])
+    return mse
+
+# Parameters
+n_clusters_list = [2, 3, 4, 5, 6]
+max_iter = 100
+random_state = 42
+
+# Compute MSE for each number of clusters
+mse_values = []
+for n_clusters in n_clusters_list:
+    mse = kmeans_and_mse(X, n_clusters, max_iter, random_state)
+    mse_values.append(mse)
+
+# Plot MSE vs. Number of clusters
+plt.figure(figsize=(10, 6))
+plt.plot(n_clusters_list, mse_values, marker='o')
+plt.title('MSE vs. Number of Clusters')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Mean Squared Error')
+plt.grid(True)
+plt.show()
+
+*********************************************************************************************************************
+*********************************************************************************************************************
+
+
+output:-->>
+
+A graph will be formed 
